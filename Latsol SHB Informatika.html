@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulasi SHB Informatika Kelas 10</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in-up': 'fadeInUp 0.5s ease-out',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+  <!-- ================= SCREEN: START ================= -->
+  <div id="screen-start" class="min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-3xl w-full bg-slate-800 p-8 md:p-12 rounded-2xl shadow-2xl text-center border border-slate-700 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+      
+      <div class="mb-6 flex justify-center">
+         <svg class="w-20 h-20 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+      </div>
+      
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight text-white">
+        Simulasi Latihan Soal
+      </h1>
+      <h2 class="text-lg md:text-2xl text-indigo-300 font-semibold mb-6">
+        Mata Pelajaran: Informatika
+      </h2>
+      
+      <div class="bg-slate-700/50 rounded-xl p-6 mb-8 text-left max-w-xl mx-auto border border-slate-600">
+        <h3 class="font-bold text-white mb-3">📋 Instruksi Latihan:</h3>
+        <ul class="list-disc pl-5 space-y-2 text-slate-300">
+          <li>Terdiri dari <strong>40 Soal Pilihan Ganda</strong>.</li>
+          <li>Materi meliputi: Berpikir Kritis, Literasi Digital, dan Jaringan Komputer.</li>
+          <li>Terdapat pembahasan otomatis setelah menjawab setiap soal.</li>
+          <li>Pastikan membaca teks stimulus/skenario dengan saksama.</li>
+        </ul>
+      </div>
+
+      <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-10 rounded-full text-lg shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-1">
+        Mulai Latihan Sekarang
+      </button>
+      
+      <p class="mt-8 text-xs text-slate-500">
+        Sumber: Latsol SHB Informatika
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN: QUIZ ================= -->
+  <div id="screen-quiz" class="hidden min-h-screen py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+      
+      <!-- Header & Progress -->
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <span id="quiz-category" class="text-xs font-bold uppercase tracking-wider text-indigo-400 bg-indigo-900/30 px-3 py-1 rounded-full">
+            Kategori
+          </span>
+        </div>
+        <div id="quiz-progress-text" class="text-sm font-semibold text-slate-400">
+          Soal 1 / 40
+        </div>
+      </div>
+      <div class="w-full bg-slate-800 rounded-full h-2 mb-8 overflow-hidden">
+        <div id="quiz-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+      </div>
+
+      <!-- Main Card -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl overflow-hidden mb-6">
+        
+        <!-- Stimulus Box -->
+        <div id="quiz-stimulus-box" class="bg-slate-700/30 p-5 md:p-8 border-b border-slate-700 text-slate-300">
+          <div class="flex gap-3 mb-3 items-center">
+            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <h3 class="font-semibold text-white">Skenario / Teks Stimulus</h3>
+          </div>
+          <p id="quiz-stimulus" class="whitespace-pre-wrap leading-relaxed text-sm md:text-base"></p>
+        </div>
+
+        <!-- Question Box -->
+        <div class="p-5 md:p-8">
+          <h2 id="quiz-question" class="text-xl md:text-2xl font-semibold mb-6 leading-snug text-white">
+            Pertanyaan
+          </h2>
+
+          <!-- Options -->
+          <div id="quiz-options" class="space-y-3">
+            <!-- Options will be injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback & Next Button -->
+      <div id="quiz-feedback-container" class="hidden animate-fade-in-up">
+        <div id="quiz-feedback-box" class="p-6 rounded-2xl border mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div id="quiz-feedback-icon"></div>
+            <h3 id="quiz-feedback-title" class="font-bold text-lg"></h3>
+          </div>
+          <div class="pl-10">
+            <p id="quiz-feedback-text" class="opacity-90 leading-relaxed text-sm md:text-base"></p>
+          </div>
+        </div>
+
+        <div class="flex justify-end pb-12">
+          <button onclick="handleNextQuestion()" id="quiz-next-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transition">
+            Soal Berikutnya
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SCREEN: RESULT ================= -->
+  <div id="screen-result" class="hidden min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="max-w-2xl w-full bg-slate-800 p-8 md:p-12 rounded-3xl shadow-2xl text-center border border-slate-700">
+      
+      <h2 class="text-3xl font-bold mb-8 text-white">Latihan Selesai! 🎉</h2>
+      
+      <div class="relative w-48 h-48 mx-auto mb-8">
+        <svg class="w-full h-full" viewBox="0 0 36 36">
+          <path class="text-slate-700" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          <path id="result-circle" class="text-indigo-500" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span id="result-score" class="text-5xl font-black text-white">0</span>
+          <span class="text-sm text-slate-400 mt-1">dari 100</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-700/30 rounded-xl p-6 mb-8 border border-slate-600">
+        <p class="text-lg">
+          Kamu menjawab benar <strong id="result-correct" class="text-emerald-400 text-xl">0</strong> dari <strong id="result-total" class="text-blue-400 text-xl">40</strong> soal.
+        </p>
+        <p id="result-message" class="mt-3 text-slate-400 italic">
+          Message
+        </p>
+      </div>
+
+      <div class="flex justify-center mt-6">
+        <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-10 rounded-full shadow-lg transition">
+          Ulangi Latihan 🔄
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATA SOAL PILIHAN GANDA INFORMATIKA (40 SOAL) ---
+    const questionsData = [
+      {
+        id: 1,
+        category: "Berpikir Kritis & Logika",
+        stimulus: "Dalam sebuah forum diskusi sekolah, Rina mengusulkan agar kantin mengurangi penggunaan plastik sekali pakai demi kelestarian lingkungan. Budi merespons, \"Jadi Rina ingin kita semua makan langsung dari meja tanpa piring dan kembali hidup seperti di zaman purba?\"",
+        question: "Berdasarkan skenario tersebut, jenis kesesatan logika (fallacy) apa yang dilakukan oleh Budi?",
+        options: [
+          { key: "A", text: "Strawman" },
+          { key: "B", text: "Ad Hominem" },
+          { key: "C", text: "Hasty Generalization" },
+          { key: "D", text: "Slippery Slope" },
+          { key: "E", text: "False Dilemma" }
+        ],
+        correct: "A",
+        explanation: "Budi melakukan Strawman fallacy karena ia mendistorsi dan melebih-lebihkan argumen Rina (mengurangi plastik) menjadi sesuatu yang sangat ekstrem (makan dari meja/zaman purba) sehingga lebih mudah untuk diserang atau ditertawakan."
+      },
+      {
+        id: 2,
+        category: "Mesin Pencari",
+        stimulus: "Seorang siswa ingin menghitung sebuah persamaan matematika melalui kolom pencarian di mesin cari (search engine). Ia memasukkan kueri 40+10*3.",
+        question: "Bagaimana mesin cari memproses dan menampilkan hasil dari input operasi matematika tersebut?",
+        options: [
+          { key: "A", text: "Menghasilkan 150 karena menghitung berurutan dari kiri ke kanan." },
+          { key: "B", text: "Menghasilkan 70 karena memprioritaskan operasi perkalian terlebih dahulu." },
+          { key: "C", text: "Menampilkan artikel tentang cara menghitung rumus matematika dasar." },
+          { key: "D", text: "Menghasilkan error karena mesin cari tidak dapat memproses simbol." },
+          { key: "E", text: "Menampilkan kalkulator tanpa memberikan hasil akhir secara otomatis." }
+        ],
+        correct: "B",
+        explanation: "Mesin cari modern memiliki fitur kalkulator bawaan yang mematuhi aturan standar matematika (PEMDAS/BODMAS), di mana operasi perkalian (10*3=30) dilakukan sebelum penjumlahan (40+30=70)."
+      },
+      {
+        id: 3,
+        category: "Literasi Digital",
+        stimulus: "Di grup obrolan keluarga, Anda menerima pesan berantai yang mengklaim bahwa minum air garam hangat dapat menyembuhkan segala jenis virus dalam 24 jam.",
+        question: "Langkah evaluasi manakah yang paling tepat untuk memastikan kebenaran informasi tersebut?",
+        options: [
+          { key: "A", text: "Mempercayai informasi karena dikirim oleh kerabat dekat yang tepercaya." },
+          { key: "B", text: "Membagikannya ke grup lain dengan tambahan \"hanya meneruskan pesan\"." },
+          { key: "C", text: "Membuka tab baru dan mencari verifikasi dari situs resmi otoritas kesehatan." },
+          { key: "D", text: "Membalas pesan tersebut dengan marah karena menyebarkan berita palsu." },
+          { key: "E", text: "Menutup aplikasi dan mengabaikan pesan tersebut tanpa mencari tahu kebenarannya." }
+        ],
+        correct: "C",
+        explanation: "Langkah terbaik adalah melakukan lateral reading (membaca lateral), yaitu keluar dari platform sumber dan memverifikasi klaim tersebut melalui sumber independen dan kredibel, seperti situs kementerian kesehatan atau WHO."
+      },
+      {
+        id: 4,
+        category: "Berpikir Kritis & Logika",
+        stimulus: "Dalam debat pemilihan ketua OSIS, Kandidat A memaparkan program kerjanya yang rinci tentang digitalisasi perpustakaan. Kandidat B menanggapi, \"Bagaimana kita bisa percaya pada program digitalisasinya, nilai ujian matematikanya saja selalu di bawah rata-rata!\"",
+        question: "Kesalahan berpikir apa yang digunakan oleh Kandidat B?",
+        options: [
+          { key: "A", text: "Red Herring" },
+          { key: "B", text: "Strawman" },
+          { key: "C", text: "Bandwagon" },
+          { key: "D", text: "Ad Hominem" },
+          { key: "E", text: "Appeal to Authority (Menggunakan otoritas yang tidak relevan)" }
+        ],
+        correct: "D",
+        explanation: "Kandidat B melakukan Ad Hominem karena ia tidak membalas substansi argumen Kandidat A (program digitalisasi), melainkan menyerang karakter atau atribut pribadi Kandidat A (nilai matematika) yang tidak relevan dengan argumennya."
+      },
+      {
+        id: 5,
+        category: "Berpikir Kritis & Logika",
+        stimulus: "Seorang pengguna media sosial membeli sebuah earphone dari merek X dan kebetulan mendapatkan barang cacat pabrik. Ia langsung menulis ulasan: \"Jangan pernah beli produk dari merek X, semua barang elektronik buatan mereka adalah sampah yang gampang rusak!\"",
+        question: "Kesimpulan pengguna tersebut mencerminkan kesesatan logika jenis apa?",
+        options: [
+          { key: "A", text: "Ad Hominem" },
+          { key: "B", text: "False Cause" },
+          { key: "C", text: "Circular Reasoning" },
+          { key: "D", text: "Appeal to Emotion" },
+          { key: "E", text: "Hasty Generalization" }
+        ],
+        correct: "E",
+        explanation: "Pengguna tersebut melakukan Hasty Generalization dengan mengambil kesimpulan menyeluruh (semua barang merek X rusak) hanya berdasarkan satu sampel atau pengalaman yang sangat kecil."
+      },
+      {
+        id: 6,
+        category: "Literasi Digital",
+        stimulus: "Banyak pengguna internet rentan membagikan berita sensasional tanpa memverifikasi kebenarannya terlebih dahulu.",
+        question: "Berdasarkan prinsip skeptisisme literasi digital, mengapa perilaku ini sangat berbahaya bagi masyarakat luas?",
+        options: [
+          { key: "A", text: "Memperkuat algoritma media sosial untuk menyebarkan misinformasi secara masif." },
+          { key: "B", text: "Mengurangi kapasitas penyimpanan data pada server aplikasi media sosial tersebut." },
+          { key: "C", text: "Menjadikan pengguna internet lebih lambat dalam menerima berita-berita terbaru." },
+          { key: "D", text: "Menyebabkan akun pengguna media sosial langsung diblokir oleh pihak kepolisian." },
+          { key: "E", text: "Membuat perusahaan media sosial harus membayar denda kepada pemerintah pusat." }
+        ],
+        correct: "A",
+        explanation: "Membagikan berita sensasional tanpa verifikasi akan direspons oleh algoritma media sosial sebagai tingkat engagement yang tinggi, sehingga algoritma akan semakin memperkuat dan menyebarkan misinformasi tersebut ke lebih banyak orang."
+      },
+      {
+        id: 7,
+        category: "Literasi Digital",
+        stimulus: "Anda sedang membaca sebuah artikel blog yang mengklaim bahwa sebuah meteor raksasa akan menabrak bumi bulan depan. Artikel tersebut sama sekali tidak mencantumkan narasumber atau tautan referensi.",
+        question: "Tindakan korektif apa yang seharusnya Anda terapkan saat menggunakan teknik membaca lateral?",
+        options: [
+          { key: "A", text: "Menghubungi penulis blog untuk meminta penjelasan dan sumber datanya." },
+          { key: "B", text: "Mencari klaim \"meteor menabrak bumi bulan depan\" di portal berita sains kredibel." },
+          { key: "C", text: "Membaca kolom komentar di blog tersebut untuk melihat pendapat pembaca lain." },
+          { key: "D", text: "Menyimpan artikel tersebut untuk dibaca ulang saat tanggal kejadian sudah dekat." },
+          { key: "E", text: "Memeriksa desain visual situs blog tersebut untuk menilai tingkat profesionalitasnya." }
+        ],
+        correct: "B",
+        explanation: "Teknik membaca lateral mengharuskan kita untuk segera meninggalkan situs yang meragukan (tanpa sumber) dan membuka tab baru untuk melakukan cross-check pada sumber-sumber yang kredibel dan independen (seperti jurnal sains atau portal berita resmi)."
+      },
+      {
+        id: 8,
+        category: "Evaluasi Informasi",
+        stimulus: "Sebuah situs web dengan nama dominan provokatif menerbitkan artikel opini yang menyudutkan salah satu kelompok masyarakat dengan bahasa yang sangat emosional.",
+        question: "Sebagai pembaca kritis, bagaimana cara terbaik menilai kredibilitas informasi dari situs semacam itu?",
+        options: [
+          { key: "A", text: "Mempercayainya jika artikel tersebut memiliki ribuan likes dan shares." },
+          { key: "B", text: "Mengasumsikan seluruh isinya adalah fakta karena berani tampil beda." },
+          { key: "C", text: "Membandingkan gaya bahasa dan klaimnya dengan laporan media jurnalistik arus utama." },
+          { key: "D", text: "Membagikan tautan artikel tersebut agar orang lain bisa ikut memberikan penilaian." },
+          { key: "E", text: "Menganggap situs provokatif selalu menyajikan kebenaran yang disembunyikan media." }
+        ],
+        correct: "C",
+        explanation: "Situs provokatif seringkali menggunakan opini subjektif dan emosi. Cara terbaik menilainya adalah membandingkan klaim tersebut dengan laporan dari media arus utama (mainstream media) yang terikat pada kode etik jurnalistik."
+      },
+      {
+        id: 9,
+        category: "Evaluasi Informasi",
+        stimulus: "Seorang siswa ditugaskan mencari data tingkat pengangguran nasional untuk makalah ekonomi. Ia menemukan dua sumber: (1) Blog opini pribadi, dan (2) Publikasi situs Badan Pusat Statistik (BPS).",
+        question: "Kriteria utama apa yang menjadikan situs BPS lebih valid digunakan sebagai sumber rujukan utama?",
+        options: [
+          { key: "A", text: "Situs BPS biasanya memiliki tampilan grafis yang lebih menarik dan modern." },
+          { key: "B", text: "Situs BPS menyajikan informasi menggunakan bahasa yang santai dan gaul." },
+          { key: "C", text: "Situs BPS lebih mudah ditemukan di halaman pertama hasil pencarian Google." },
+          { key: "D", text: "Situs BPS adalah lembaga resmi negara yang memiliki metodologi riset terukur." },
+          { key: "E", text: "Situs BPS memuat banyak opini masyarakat untuk mendukung data yang ada." }
+        ],
+        correct: "D",
+        explanation: "Lembaga resmi seperti BPS memiliki otoritas, metodologi penelitian yang jelas, dan akuntabilitas publik dalam mengumpulkan data, menjadikannya sumber yang jauh lebih valid dan objektif dibandingkan blog pribadi."
+      },
+      {
+        id: 10,
+        category: "Literasi Digital",
+        stimulus: "Perkembangan Artificial Intelligence (AI) saat ini memungkinkan alat pencari meringkas informasi dari berbagai situs web dalam hitungan detik.",
+        question: "Apa kesimpulan terbaik mengenai peran AI dalam mendukung kemampuan literasi dan evaluasi informasi siswa?",
+        options: [
+          { key: "A", text: "AI menggantikan sepenuhnya kebutuhan manusia untuk berpikir analitis dan kritis." },
+          { key: "B", text: "AI memastikan semua informasi yang diringkasnya terbebas dari bias manusia." },
+          { key: "C", text: "AI merupakan sumber otoritas tunggal yang hasil ringkasannya tidak perlu diperiksa." },
+          { key: "D", text: "AI membuat siswa tidak perlu lagi membaca buku karena semuanya sudah tersedia." },
+          { key: "E", text: "AI membantu mempercepat pencarian konteks, namun keakuratannya tetap butuh verifikasi manusia." }
+        ],
+        correct: "E",
+        explanation: "Meskipun AI sangat efisien dalam meringkas dan mengumpulkan data, AI dapat mengalami halusinasi atau merangkum sumber yang bias. Oleh karena itu, human-in-the-loop (verifikasi kritis oleh manusia) tetap wajib dilakukan."
+      },
+      {
+        id: 11,
+        category: "Evaluasi Informasi",
+        stimulus: "Bacalah kutipan berita berikut: \"Harga beras di pasar tradisional naik sebesar 15% pada kuartal pertama tahun ini. Kenaikan ini sangat menyengsarakan masyarakat kecil yang daya belinya terus menurun.\"",
+        question: "Manakah analisis yang paling tepat dalam membedakan fakta dan opini pada kutipan di atas?",
+        options: [
+          { key: "A", text: "\"Kenaikan harga beras sebesar 15%\" adalah fakta, sedangkan \"menyengsarakan masyarakat\" adalah opini." },
+          { key: "B", text: "\"Kenaikan harga beras sebesar 15%\" adalah opini, sedangkan \"menyengsarakan masyarakat\" adalah fakta." },
+          { key: "C", text: "Seluruh kalimat dalam kutipan tersebut merupakan fakta karena diambil dari peristiwa ekonomi nyata." },
+          { key: "D", text: "Seluruh kalimat dalam kutipan tersebut merupakan opini karena ditulis berdasarkan pandangan wartawan." },
+          { key: "E", text: "Fakta dan opini tidak dapat dibedakan dalam kalimat tersebut karena keduanya saling tumpang tindih." }
+        ],
+        correct: "A",
+        explanation: "Fakta adalah sesuatu yang objektif dan dapat diukur dengan angka (naik 15%). Opini adalah pandangan subjektif atau interpretasi emosional terhadap fakta tersebut (\"sangat menyengsarakan\")."
+      },
+      {
+        id: 12,
+        category: "Literasi Digital",
+        stimulus: "Seorang jurnalis investigasi menemukan sebuah dokumen rahasia yang mengungkap dugaan korupsi di sebuah instansi.",
+        question: "Mengevaluasi prosedur jurnalistik yang benar, langkah apa yang harus dilakukan jurnalis tersebut sebelum menerbitkan berita?",
+        options: [
+          { key: "A", text: "Segera memublikasikan dokumen tersebut di media sosial agar cepat viral." },
+          { key: "B", text: "Melakukan verifikasi silang (cross-check) kepada pihak terkait dan pakar independen." },
+          { key: "C", text: "Mengubah beberapa angka di dokumen agar terlihat lebih dramatis bagi pembaca." },
+          { key: "D", text: "Menyembunyikan dokumen tersebut dan meminta imbalan uang dari instansi terkait." },
+          { key: "E", text: "Menerbitkan berita dengan menggunakan nama samaran tanpa menyebutkan sumber sama sekali." }
+        ],
+        correct: "B",
+        explanation: "Prosedur standar jurnalistik adalah cover both sides dan verifikasi silang (cross-check) dari berbagai sumber independen sebelum menyebarkan klaim serius, demi menjaga akurasi dan objektivitas."
+      },
+      {
+        id: 13,
+        category: "Evaluasi Informasi",
+        stimulus: "Seorang mahasiswa kedokteran sedang menyusun tugas akhir mengenai efektivitas vaksin terbaru. Ia membandingkan referensi dari jurnal The Lancet dengan utas (thread) viral di aplikasi X (Twitter).",
+        question: "Mengapa jurnal ilmiah jauh lebih kredibel untuk digunakan sebagai landasan penelitian dibandingkan utas media sosial?",
+        options: [
+          { key: "A", text: "Jurnal ilmiah selalu ditulis dengan bahasa yang mudah dipahami oleh masyarakat umum." },
+          { key: "B", text: "Media sosial tidak pernah memiliki pengguna dengan latar belakang keilmuan medis." },
+          { key: "C", text: "Jurnal ilmiah melalui proses penelaahan sejawat (peer-review) sebelum dipublikasikan." },
+          { key: "D", text: "Jurnal ilmiah selalu dapat diakses secara gratis oleh siapa saja tanpa perlu berlangganan." },
+          { key: "E", text: "Utas media sosial biasanya terlalu panjang sehingga sulit untuk disimpulkan intinya." }
+        ],
+        correct: "C",
+        explanation: "Standar emas sumber ilmiah adalah peer-review, di mana metodologi dan temuan penelitian dievaluasi secara ketat oleh para pakar di bidang yang sama sebelum diizinkan untuk diterbitkan."
+      },
+      {
+        id: 14,
+        category: "Literasi Digital",
+        stimulus: "Sebuah video viral di Tik Tok mengklaim bahwa merebus daun pepaya dengan koin tembaga dapat menyembuhkan penyakit diabetes dalam seminggu.",
+        question: "Langkah validasi paling sistematis apa yang harus Anda lakukan terhadap klaim kesehatan ini?",
+        options: [
+          { key: "A", text: "Mencoba resep tersebut terlebih dahulu dan melihat apakah ada efek sampingnya." },
+          { key: "B", text: "Membagikan video tersebut ke kerabat yang menderita diabetes sebagai bentuk kepedulian." },
+          { key: "C", text: "Memeriksa kolom komentar video untuk melihat apakah banyak testimoni yang berhasil." },
+          { key: "D", text: "Mencari jurnal medis atau situs jurnalistik pemeriksa fakta (fact-checker) terkait klaim koin tembaga." },
+          { key: "E", text: "Membuat video tandingan yang langsung menyalahkan pembuat konten tanpa mencari data." }
+        ],
+        correct: "D",
+        explanation: "Validasi kesehatan wajib menggunakan sumber otoritas medis (jurnal) atau organisasi fact-checker profesional. Testimoni di kolom komentar tidak memiliki nilai validitas ilmiah (bias konfirmasi)."
+      },
+      {
+        id: 15,
+        category: "Evaluasi Informasi",
+        stimulus: "Saat mempraktikkan teknik membaca lateral, seseorang akan membuka banyak tab di perambannya untuk mencari informasi tentang penulis atau lembaga penerbit artikel aslinya.",
+        question: "Menganalisis strategi literasi, apa tujuan utama dari teknik tersebut?",
+        options: [
+          { key: "A", text: "Meningkatkan kecepatan akses internet dengan menggunakan banyak tab sekaligus." },
+          { key: "B", text: "Mencari kesalahan tata bahasa atau typo pada artikel asli untuk menurunkan kredibilitasnya." },
+          { key: "C", text: "Menemukan gambar ilustrasi yang lebih bagus untuk digunakan pada tugas presentasi." },
+          { key: "D", text: "Mengumpulkan argumen sebanyak mungkin untuk memenangkan perdebatan di media sosial." },
+          { key: "E", text: "Mendapatkan perspektif luar untuk mengevaluasi bias dan rekam jejak sumber informasi aslinya." }
+        ],
+        correct: "E",
+        explanation: "Membaca lateral bertujuan agar pembaca tidak terjebak dalam narasi atau desain situs itu sendiri. Membuka tab baru memungkinkan kita melihat apa kata orang lain (pakar/situs independen) mengenai kredibilitas situs pertama."
+      },
+      {
+        id: 16,
+        category: "Jaringan Komputer",
+        stimulus: "Sebuah sekolah memasang jaringan komputer di laboratorium komputer untuk menghubungkan 30 PC dan sebuah mesin pencetak (printer) agar mudah berbagi dokumen lokal.",
+        question: "Mengklasifikasikan cakupannya, jenis jaringan apa yang diterapkan oleh sekolah tersebut?",
+        options: [
+          { key: "A", text: "Local Area Network (LAN) karena mencakup area yang sempit seperti dalam satu ruangan atau gedung." },
+          { key: "B", text: "Wide Area Network (WAN) karena menghubungkan banyak perangkat komputasi secara bersamaan." },
+          { key: "C", text: "Metropolitan Area Network (MAN) karena memiliki kecepatan transfer data yang sangat tinggi." },
+          { key: "D", text: "Personal Area Network (PAN) karena digunakan secara personal oleh siswa di sekolah tersebut." },
+          { key: "E", text: "Virtual Private Network (VPN) karena lab komputer membutuhkan tingkat enkripsi jaringan khusus." }
+        ],
+        correct: "A",
+        explanation: "Jaringan komputer yang mencakup area kecil seperti sekolah, rumah, atau kantor (hingga beberapa ratus meter) yang memungkinkan perangkat berbagi data diklasifikasikan sebagai Local Area Network (LAN)."
+      },
+      {
+        id: 17,
+        category: "Keamanan Jaringan",
+        stimulus: "Dalam keamanan jaringan, enkripsi merupakan teknik kriptografi yang sering diaplikasikan saat mengirim data penting lewat internet.",
+        question: "Mengevaluasi fungsi esensialnya, bagaimana cara enkripsi melindungi data dari peretas (hacker)?",
+        options: [
+          { key: "A", text: "Memblokir sepenuhnya peretas agar tidak bisa mendeteksi perangkat pengguna di internet." },
+          { key: "B", text: "Mengacak plainteks menjadi cipherteks menggunakan algoritma sehingga tidak bisa dibaca tanpa kunci." },
+          { key: "C", text: "Menghapus data sensitif secara otomatis begitu ada aktivitas mencurigakan di dalam jaringan." },
+          { key: "D", text: "Membuat duplikat data palsu yang akan dikirimkan kepada peretas sebagai bentuk kamuflase." },
+          { key: "E", text: "Mengubah alamat IP pengguna menjadi alamat palsu sehingga lokasi fisik pengguna tidak terlacak." }
+        ],
+        correct: "B",
+        explanation: "Enkripsi adalah metode utama melindungi data dengan mengubah plainteks (data asli) menjadi cipherteks yang diacak melalui algoritma matematika, sehingga data tidak dapat dibaca tanpa kunci dekripsi yang tepat."
+      },
+      {
+        id: 18,
+        category: "Perangkat Jaringan",
+        stimulus: "Dalam sebuah kantor yang memiliki banyak divisi, lalu lintas pengiriman email antar divisi ke internet pusat berjalan dengan sangat lancar tanpa kemacetan bandwidth.",
+        question: "Perangkat keras jaringan manakah yang bertugas utama mengarahkan paket data tersebut melalui jalur paling efisien berdasarkan alamat IP?",
+        options: [
+          { key: "A", text: "Modem (Modulator Demodulator)" },
+          { key: "B", text: "Switch jaringan" },
+          { key: "C", text: "Router" },
+          { key: "D", text: "Network Interface Card (NIC)" },
+          { key: "E", text: "Hub" }
+        ],
+        correct: "C",
+        explanation: "Router berfungsi untuk mengarahkan lalu lintas data antar jaringan dan memilih jalur komunikasi paling efisien berdasarkan alamat IP tujuan yang dituju."
+      },
+      {
+        id: 19,
+        category: "Keamanan Jaringan",
+        stimulus: "Anda baru saja membeli router wireless baru untuk di rumah. Saat membuka panel konfigurasi, Anda dihadapkan pada beberapa pilihan metode keamanan jaringan.",
+        question: "Untuk mencegah penyadapan traffic oleh pihak luar, standar protokol enkripsi nirkabel mana yang paling direkomendasikan saat ini?",
+        options: [
+          { key: "A", text: "Wired Equivalent Privacy (WEP)" },
+          { key: "B", text: "Wi-Fi Protected Access (WPA)" },
+          { key: "C", text: "Pembatasan akses tanpa kata sandi" },
+          { key: "D", text: "Wi-Fi Protected Access 3 (WPA3)" },
+          { key: "E", text: "Pengalamatan Media Access Control (MAC) statis" }
+        ],
+        correct: "D",
+        explanation: "WPA3 adalah standar keamanan protokol enkripsi lalu lintas nirkabel terbaru yang sangat direkomendasikan dan diklaim paling aman jika perangkat sudah mendukungnya."
+      },
+      {
+        id: 20,
+        category: "Keamanan Jaringan",
+        stimulus: "Seorang karyawan kantor terpaksa harus bekerja dari sebuah kafe yang menyediakan layanan Wi-Fi gratis (publik) tanpa perlindungan kata sandi. Ia harus mengakses server perusahaan yang berisi data rahasia.",
+        question: "Mengapa Virtual Private Network (VPN) sangat krusial digunakan dalam skenario tersebut?",
+        options: [
+          { key: "A", text: "VPN akan meningkatkan kecepatan download kafe tersebut hingga dua kali lipat standar." },
+          { key: "B", text: "VPN akan memutuskan perangkat pengguna lain di kafe tersebut agar bandwidth maksimal." },
+          { key: "C", text: "VPN akan menyimpan salinan lokal semua data kantor ke perangkat pribadi secara otomatis." },
+          { key: "D", text: "VPN memblokir semua iklan yang muncul dari penyedia layanan Wi-Fi publik di kafe tersebut." },
+          { key: "E", text: "VPN membuat terowongan komunikasi terenkripsi yang menutupi aktivitas internet dari pemantauan pihak ketiga." }
+        ],
+        correct: "E",
+        explanation: "VPN (Virtual Private Network) membuat koneksi atau \"terowongan rahasia\" terenkripsi antara perangkat dengan server, sehingga menyembunyikan lalu lintas data pengguna dari pihak lain atau peretas saat berada di jaringan Wi-Fi publik."
+      },
+      {
+        id: 21,
+        category: "Jaringan Nirkabel",
+        stimulus: "Seorang teknisi jaringan mengatur router perusahaan dengan memilih opsi \"Disable SSID Broadcast\" atau \"Hide SSID\" pada panel konfigurasinya.",
+        question: "Evaluasi alasan utama teknisi tersebut melakukan konfigurasi penyembunyian SSID!",
+        options: [
+          { key: "A", text: "Membuat nama jaringan Wi-Fi tersebut tidak muncul dalam daftar pencarian sinyal di perangkat orang lain." },
+          { key: "B", text: "Mengenkripsi semua password pengguna yang terhubung ke dalam jaringan router tersebut." },
+          { key: "C", text: "Meningkatkan jangkauan sinyal Wi-Fi perusahaan menembus tembok beton yang tebal." },
+          { key: "D", text: "Mempercepat koneksi internet bagi karyawan karena beban pemancaran sinyal berkurang drastis." },
+          { key: "E", text: "Membatasi akses router hanya untuk perangkat yang memiliki Network Interface Card khusus." }
+        ],
+        correct: "A",
+        explanation: "SSID (Service Set Identifier) adalah nama jaringan Wi-Fi. Menonaktifkan opsi SSID broadcast bertujuan agar nama jaringan tersebut tidak muncul ke dalam daftar Wi-Fi di perangkat orang lain yang tidak sah."
+      },
+      {
+        id: 22,
+        category: "Keamanan Jaringan",
+        stimulus: "Sebuah perusahaan akan memperbarui protokol jaringan nirkabelnya karena sering terjadi eksploitasi data oleh peretas luar. Admin jaringan harus memilih antara protokol WEP, WPA2, dan WPA3.",
+        question: "Membandingkan tingkat keamanannya, mengapa admin harus memilih WPA3 dan meninggalkan WEP secara mutlak?",
+        options: [
+          { key: "A", text: "WEP sangat lambat dalam mentransfer file berukuran besar dibandingkan dengan WPA3." },
+          { key: "B", text: "WPA3 adalah standar enkripsi paling mutakhir, sementara WEP sudah sangat usang dan mudah diretas." },
+          { key: "C", text: "WPA3 memungkinkan perangkat terhubung ke internet tanpa perlu memasukkan kata sandi sama sekali." },
+          { key: "D", text: "WEP hanya dapat digunakan pada jaringan jenis kabel (LAN), bukan pada jaringan nirkabel." },
+          { key: "E", text: "WPA3 merupakan perangkat lunak gratis (open source), sedangkan WEP berbayar dengan lisensi mahal." }
+        ],
+        correct: "B",
+        explanation: "WEP adalah protokol keamanan wireless lama yang berstatus sudah usang dan terbukti sangat tidak aman (\"Jangan gunakan!\"). Sebaliknya, WPA3 adalah standar enkripsi paling mutakhir dan paling aman saat ini."
+      },
+      {
+        id: 23,
+        category: "Keamanan Jaringan",
+        stimulus: "Selain memasang program antivirus, sistem operasi modern seperti Windows dilengkapi dengan fitur keamanan bawaan yang dikenal sebagai Windows Defender Firewall.",
+        question: "Menganalisis fungsionalitasnya, bagaimana mekanisme kerja utama dari sebuah firewall?",
+        options: [
+          { key: "A", text: "Mengubah sinyal digital menjadi sinyal analog saat paket data dikirim ke luar." },
+          { key: "B", text: "Memperkuat sinyal Wi-Fi dari router agar menjangkau seluruh area ruangan." },
+          { key: "C", text: "Bertindak sebagai penghalang yang memfilter lalu lintas jaringan masuk dan keluar untuk mencegah akses mencurigakan." },
+          { key: "D", text: "Mengelola dan menyimpan semua kata sandi pengguna ke dalam sebuah brankas terenkripsi secara lokal." },
+          { key: "E", text: "Memperbarui secara otomatis perangkat lunak atau driver kartu jaringan ke versi yang paling stabil." }
+        ],
+        correct: "C",
+        explanation: "Firewall bertindak sebagai \"satpam digital\" atau penghalang yang bertugas mem-filter (menyaring) lalu lintas jaringan yang masuk dan keluar guna mencegah adanya akses yang mencurigakan atau tidak sah."
+      },
+      {
+        id: 24,
+        category: "Perangkat Jaringan",
+        stimulus: "Setiap komputer atau ponsel yang terhubung ke jaringan internet memiliki sebuah kartu antarmuka fisik (Network Interface Card).",
+        question: "Komponen identifikasi unik apa yang tertanam secara permanen pada kartu jaringan tersebut, yang sering dimanfaatkan admin jaringan untuk memblokir perangkat spesifik secara perangkat keras?",
+        options: [
+          { key: "A", text: "Alamat Internet Protocol (IP)" },
+          { key: "B", text: "Alamat Service Set Identifier (SSID)" },
+          { key: "C", text: "Kata sandi WPA3" },
+          { key: "D", text: "Alamat Media Access Control (MAC)" },
+          { key: "E", text: "Nomor Port Virtual Private Network (VPN)" }
+        ],
+        correct: "D",
+        explanation: "Setiap Network Interface Card (NIC) memiliki alamat Media Access Control (MAC) unik sebagai identifikasi perangkat keras di dalam sebuah jaringan."
+      },
+      {
+        id: 25,
+        category: "Keamanan Informasi",
+        stimulus: "Banyak pengguna internet masih menggunakan kata sandi sederhana seperti \"123456\", \"password\", atau tanggal lahir mereka pada akun-akun digital yang penting.",
+        question: "Menganalisis risikonya, apa dampak fatal dari praktik manajemen kata sandi yang buruk ini?",
+        options: [
+          { key: "A", text: "Menyebabkan ruang penyimpanan email pengguna menjadi lebih cepat penuh karena spam." },
+          { key: "B", text: "Komputer pengguna akan lebih sering mengalami mati mendadak (restart) akibat error server." },
+          { key: "C", text: "Mengakibatkan perangkat gawai pengguna kehilangan sinyal Wi-Fi secara permanen." },
+          { key: "D", text: "Pihak penyedia layanan digital akan memblokir akun pengguna tersebut secara sepihak." },
+          { key: "E", text: "Sangat rentan dieksploitasi dan dipecahkan oleh peretas menggunakan metode brute force dan tebak-menebak." }
+        ],
+        correct: "E",
+        explanation: "Menggunakan kata sandi yang mudah ditebak seperti \"123456\", \"password\", atau informasi pribadi sangatlah lemah dan bisa dengan sangat mudah dieksploitasi oleh peretas melalui teknik brute force."
+      },
+      {
+        id: 26,
+        category: "Keamanan Informasi",
+        stimulus: "Budi sangat berhati-hati. Meskipun ia sudah membuat kata sandi yang rumit (lebih dari 12 karakter alfanumerik), ia tetap mengaktifkan fitur Autentikasi Dua Langkah (2FA) menggunakan Google Authenticator pada emailnya.",
+        question: "Evaluasilah efektivitas 2FA; mengapa fitur ini membuat akun Budi jauh lebih aman?",
+        options: [
+          { key: "A", text: "Karena meskipun kata sandi utamanya bocor, peretas tetap tidak bisa masuk tanpa kode acak yang dihasilkan oleh gawai milik Budi." },
+          { key: "B", text: "Karena 2FA secara otomatis akan melaporkan koordinat lokasi peretas ke pihak kepolisian." },
+          { key: "C", text: "Karena aplikasi 2FA akan langsung mengubah kata sandi Budi setiap kali mendeteksi ada login di perangkat lain." },
+          { key: "D", text: "Karena 2FA mengenkripsi koneksi Wi-Fi sehingga mustahil kata sandi tersebut disadap saat diketikkan." },
+          { key: "E", text: "Karena 2FA membuat Budi sama sekali tidak perlu mengingat kata sandi utamanya lagi." }
+        ],
+        correct: "A",
+        explanation: "Autentikasi Dua Langkah (2FA) merupakan metode keamanan yang memerlukan bentuk verifikasi tambahan. Bahkan jika kata sandinya bocor, peretas tetap tidak akan memiliki akses masuk karena mereka tidak memiliki perangkat fisik pengguna untuk melihat kode verifikasi."
+      },
+      {
+        id: 27,
+        category: "Jaringan Komputer",
+        stimulus: "Jaringan komputer dapat diklasifikasikan berdasarkan luas cakupan geografisnya. Internet menghubungkan benua di seluruh dunia, sementara jaringan kabel di sebuah kantor hanya menghubungkan ruangan yang bersebelahan.",
+        question: "Membedakan karakteristik teknisnya, pernyataan mana yang paling tepat membandingkan Local Area Network (LAN) dan Wide Area Network (WAN)?",
+        options: [
+          { key: "A", text: "LAN menggunakan satelit untuk konektivitas, sedangkan WAN umumnya menggunakan kabel serat optik pendek." },
+          { key: "B", text: "LAN mencakup radius yang kecil dengan kecepatan transfer data sangat tinggi, sedangkan WAN mencakup antarnegara namun dengan potensi kecepatan lebih lambat." },
+          { key: "C", text: "LAN merupakan jaringan maya yang terenkripsi (virtual), sedangkan WAN merupakan infrastruktur fisik." },
+          { key: "D", text: "LAN hanya diperuntukkan bagi koneksi nirkabel (Wi-Fi), sedangkan WAN khusus untuk koneksi kabel tembaga." },
+          { key: "E", text: "LAN mampu menghubungkan ribuan kota secara serentak, sedangkan WAN dibatasi maksimal menghubungkan 10 perangkat komputer." }
+        ],
+        correct: "B",
+        explanation: "LAN (Local Area Network) mencakup area yang sempit seperti gedung dengan kecepatan data yang sangat tinggi (100 Mbps - 10 Gbps). Sebaliknya, WAN (Wide Area Network) mencakup lintasan yang sangat luas seperti antarnegara dengan koneksi yang umumnya lebih lambat karena jarak tempuhnya yang jauh."
+      },
+      {
+        id: 28,
+        category: "Keamanan Jaringan",
+        stimulus: "Proses pengamanan data selalu melibatkan dua tahap yang saling berkebalikan: enkripsi dan dekripsi. Data diubah menjadi kode acak (cipherteks) saat akan dikirimkan.",
+        question: "Berdasarkan alur kriptografi, apa fungsi utama dari \"kunci dekripsi\" di tangan penerima pesan?",
+        options: [
+          { key: "A", text: "Mempercepat laju pengiriman paket data dalam jaringan fiber optik yang lambat." },
+          { key: "B", text: "Menggandakan data tersebut agar ada salinan cadangan (backup) jika pesan tersebut hilang di jalan." },
+          { key: "C", text: "Mengembalikan atau menerjemahkan cipherteks yang acak kembali menjadi data atau teks asli (plainteks) yang bisa dibaca." },
+          { key: "D", text: "Memutus koneksi jaringan pihak penyadap secara otomatis saat terdeteksi mencuri data." },
+          { key: "E", text: "Menyatukan protokol IPsec dengan SSL/TLS untuk membentuk lapisan keamanan Virtual Private Network ganda." }
+        ],
+        correct: "C",
+        explanation: "Fungsi utama dari kunci dekripsi di tangan si penerima adalah untuk mengonversi atau mengembalikan data acak yang telah disandikan (cipherteks) kembali ke bentuk teks data aslinya (plainteks)."
+      },
+      {
+        id: 29,
+        category: "Keamanan Jaringan",
+        stimulus: "Sebagai administrator jaringan sekolah, Anda ditugaskan merancang keamanan Wi-Fi di ruang guru yang sering disusupi oleh siswa. Anda mengonfigurasi kata sandi router yang kuat (16 karakter).",
+        question: "Solusi kombinasi tingkat lanjut apa yang paling efektif untuk dirancang agar hanya laptop milik guru yang bisa terkoneksi, meskipun para siswa secara diam-diam mengetahui kata sandi Wi-Fi tersebut?",
+        options: [
+          { key: "A", text: "Menonaktifkan sama sekali fitur broadcasting SSID dan mengubah nama jaringan setiap hari." },
+          { key: "B", text: "Memasang software Virtual Private Network gratis di seluruh laptop milik guru." },
+          { key: "C", text: "Mengubah mode switch menjadi hub agar lalu lintas jaringan terpusat pada satu titik server keamanan." },
+          { key: "D", text: "Menggunakan protokol enkripsi WPA3 dipadukan dengan pemfilteran alamat perangkat fisik (MAC Address Filtering) khusus laptop guru." },
+          { key: "E", text: "Mengandalkan metode Autentikasi Dua Langkah (2FA) di panel kontrol pengaturan administratif router utama." }
+        ],
+        correct: "D",
+        explanation: "Penerapan enkripsi WPA3 akan mencegah penyadapan dari luar, dan perpaduannya dengan pemfilteran alamat MAC (berdasarkan identifikasi unik dari NIC setiap laptop guru) akan otomatis menolak perangkat asing meskipun peretas atau siswa mengetahui kata sandinya."
+      },
+      {
+        id: 30,
+        category: "Keamanan Informasi",
+        stimulus: "Di era kejahatan siber yang semakin masif, sebuah perusahaan start-up teknologi mewajibkan seluruh pekerjanya menggunakan aplikasi manajer kata sandi dan mengaktifkan metode Autentikasi Dua Langkah (2FA) di semua akun digital kerja mereka.",
+        question: "Membandingkan skema perlindungan, mengapa mengandalkan \"satu kata sandi tunggal yang sangat panjang\" masih dianggap kurang aman dibandingkan skema 2FA?",
+        options: [
+          { key: "A", text: "Kata sandi yang panjang membutuhkan daya memori server tinggi yang dapat merusak basis data internal perusahaan." },
+          { key: "B", text: "Kata sandi panjang lebih rentan terhadap serangan manipulasi psikologis (seperti SIM Swapping), sedangkan 2FA tidak butuh perangkat fisik sama sekali." },
+          { key: "C", text: "Semakin panjang kata sandi, semakin mudah disadap oleh router jenis usang seperti Hub." },
+          { key: "D", text: "Perangkat lunak manajer kata sandi selalu bersifat sumber terbuka (open source) sehingga mudah dibaca source code-nya oleh peretas." },
+          { key: "E", text: "Kata sandi tunggal, sekuat apa pun, tetap bisa dicuri (lewat kebocoran database pusat atau jebakan phishing); 2FA menambah lapisan validasi fisik kepemilikan." }
+        ],
+        correct: "E",
+        explanation: "Penggunaan satu kata sandi saja tidak disarankan. Jika menggunakan 2FA, peretas tetap membutuhkan kode fisik tambahan. Bahkan jika kata sandi terkuat pun bocor, tanpa kode 2FA tersebut, akun akan tetap terlindungi dari akses ilegal."
+      },
+      {
+        id: 31,
+        category: "Keamanan Jaringan",
+        stimulus: "Ilustrasi sering kali menggambarkan teknologi Virtual Private Network (VPN) sebagai \"terowongan rahasia\" di jalan raya umum.",
+        question: "Berdasarkan analisis mekanisme tersebut, bagaimana fungsi tunneling melindungi paket data di dalam sebuah jaringan perantara yang berstatus \"publik\" atau rentan?",
+        options: [
+          { key: "A", text: "Membuat jalur khusus yang secara utuh membungkus dan mengenkripsi seluruh lalu lintas data pengirim hingga tiba di server tujuan." },
+          { key: "B", text: "Memotong kabel jaringan fisik publik agar data harus dikirim via pemancar satelit privat di luar angkasa." },
+          { key: "C", text: "Mengompresi paket data hingga berukuran sangat kecil sehingga peretas kesulitan untuk melihat wujud datanya." },
+          { key: "D", text: "Menyaring dan memblokir seluruh akses internet dari sistem komputer selain aplikasi yang mendukung VPN." },
+          { key: "E", text: "Mengubah alamat MAC perangkat komputer menjadi alamat MAC server VPN secara permanen dan otomatis." }
+        ],
+        correct: "A",
+        explanation: "Cara kerja dari VPN (Virtual Private Network) adalah membuat 'terowongan' terenkripsi antara perangkat yang Anda gunakan dan server VPN, sehingga seluruh lalu lintas data Anda terlindungi dan terenkripsi dari pemantauan pihak luar."
+      },
+      {
+        id: 32,
+        category: "Jaringan Komputer",
+        stimulus: "Sebuah perusahaan besar menempati sebuah gedung perkantoran sepuluh lantai. Mereka menarik ribuan meter kabel Ethernet (kabel LAN) untuk menyambungkan semua komputer antarlantai ke ruang server pusat yang berlokasi di basement gedung tersebut.",
+        question: "Berdasarkan klasifikasi area jangkauannya, skenario infrastruktur konektivitas gedung perkantoran ini tergolong ke dalam jaringan jenis apa?",
+        options: [
+          { key: "A", text: "Wireless Local Area Network (WLAN)" },
+          { key: "B", text: "Local Area Network (LAN)" },
+          { key: "C", text: "Metropolitan Area Network (MAN)" },
+          { key: "D", text: "Personal Area Network (PAN)" },
+          { key: "E", text: "Campus Area Network (CAN)" }
+        ],
+        correct: "B",
+        explanation: "Jaringan komputer yang secara khusus mencakup area di dalam lingkup satu gedung perkantoran atau rumah dengan jangkauan kurang dari 1 km diklasifikasikan sebagai Local Area Network (LAN)."
+      },
+      {
+        id: 33,
+        category: "Jaringan Nirkabel",
+        stimulus: "Kerap kali sinyal nirkabel (Wi-Fi) sebuah rumah memancar hingga ke teras luar. Agar tidak sembarang orang (freeloader) memakai internet rumah gratisan, Anda ingin mengunci akses spesifik, jadi walaupun teman Anda datang dan Anda beritahu password-nya, mereka tidak bisa tersambung karena perangkatnya tidak dikenali sistem.",
+        question: "Langkah administratif filtrasi komponen jaringan apakah yang paling tepat untuk mewujudkan hal tersebut?",
+        options: [
+          { key: "A", text: "Mengatur ulang kata sandi admin router dengan format acak." },
+          { key: "B", text: "Menghapus konfigurasi jaringan bawaan (IP statis) secara total pada router." },
+          { key: "C", text: "Mendaftarkan alamat fisik (MAC Address) laptop/ponsel penghuni rumah ke dalam daftar putih (whitelist) di router." },
+          { key: "D", text: "Menggunakan aplikasi Manajer Kata Sandi khusus open-source seperti Bitwarden." },
+          { key: "E", text: "Mengganti semua tipe kabel jaringan rumah menjadi fiber optic generasi terbaru." }
+        ],
+        correct: "C",
+        explanation: "Mendaftarkan perangkat ke dalam sistem whitelist (diizinkan masuk) menggunakan MAC Address filtering akan mengidentifikasi Network Interface Card unik milik tiap perangkat. Hal ini secara efektif memblokir pengguna tak diundang."
+      },
+      {
+        id: 34,
+        category: "Keamanan Jaringan",
+        stimulus: "Jaringan sekolah berbasis nirkabel sering mendapatkan ancaman packet sniffing (penyadapan data terbang) oleh oknum peretas yang berusaha mencuri soal ujian dari aplikasi lokal sekolah.",
+        question: "Untuk menangkal sniffing dan menjamin otentikasi transmisi antarkomputer, protokol pengaman paling mutakhir mana yang patut dipilih Network Engineer sekolah?",
+        options: [
+          { key: "A", text: "Merubah topologi jaringan ke arsitektur Star." },
+          { key: "B", text: "Menonaktifkan penyiaran nama router (Disable SSID)." },
+          { key: "C", text: "Menggunakan perangkat penyebaran jaringan berupa Hub alih-alih Switch." },
+          { key: "D", text: "Memaksimalkan penyandian level tertinggi di router menggunakan WPA3." },
+          { key: "E", text: "Menyalakan fitur Windows Defender dasar di PC klien." }
+        ],
+        correct: "D",
+        explanation: "Ancaman penyadapan data pada jaringan Wi-Fi dapat dicegah dengan menggunakan teknologi dan enkripsi pada perangkat jaringan mutakhir, seperti penerapan WPA3 yang terbukti lebih aman."
+      },
+      {
+        id: 35,
+        category: "Perangkat Jaringan",
+        stimulus: "Sebuah komputer modern (baik berupa desktop maupun laptop) tidak dapat berkomunikasi ke jaringan mana pun di dunia tanpa adanya komponen vital tertentu yang terpasang pada motherboard (papan induk)-nya. Komponen keras inilah yang berperan sebagai pintu gerbang fisik transmisi lalu lintas data menuju jaringan kabel atau wireless.",
+        question: "Menganalisis elemen antarmukanya, komponen keras apakah yang dimaksud?",
+        options: [
+          { key: "A", text: "Hard Disk Drive (Sistem Penyimpanan Cepat)" },
+          { key: "B", text: "Modulator dan Demodulator (Modem)" },
+          { key: "C", text: "Central Processing Unit (CPU)" },
+          { key: "D", text: "Antarmuka Kabel HDMI" },
+          { key: "E", text: "Network Interface Card (NIC)" }
+        ],
+        correct: "E",
+        explanation: "Network Interface Card (NIC) merupakan perangkat keras (kartu ekspansi atau cip terintegrasi di motherboard) yang esensial untuk memungkinkan terhubungnya sebuah komputer ke suatu jaringan."
+      },
+      {
+        id: 36,
+        category: "Topologi Jaringan",
+        stimulus: "Ada beberapa bentuk tata letak logis maupun fisik dalam mendesain sebuah jaringan interkomputer lokal. Salah satu topologi klasik dicirikan dengan sebuah kabel memanjang lurus sebagai tulang punggung (backbone), dan semua komputer \"dicangkokkan\" (tap) secara linier di sepanjang kabel tersebut.",
+        question: "Berdasarkan ciri fisik konektivitasnya, jenis topologi apakah ini?",
+        options: [
+          { key: "A", text: "Topologi Bus" },
+          { key: "B", text: "Topologi Ring" },
+          { key: "C", text: "Topologi Mesh" },
+          { key: "D", text: "Topologi Star" },
+          { key: "E", text: "Topologi Tree" }
+        ],
+        correct: "A",
+        explanation: "Karakteristik utama Topologi Bus adalah penggunaan satu kabel koaksial sentral yang memanjang lurus (sebagai tulang punggung/backbone), di mana semua perangkat komputer saling terhubung di sepanjang lintasan kabel tunggal tersebut."
+      },
+      {
+        id: 37,
+        category: "Topologi Jaringan",
+        stimulus: "Di laboratorium sekolah yang memiliki 40 buah komputer meja, masing-masing komputer ditarik kabel secara mandiri yang berpusat dan bertemu (converge) pada satu buah perangkat pemusat lalu lintas (Switch) di meja guru. Desain ini tampak menyerupai jari-jari roda sepeda.",
+        question: "Kelemahan struktural mendasar paling berisiko yang membedakan tipe topologi ini dengan topologi terdistribusi adalah?",
+        options: [
+          { key: "A", text: "Biaya pembelian kabel jaringan yang sangat murah sehingga mudah rapuh dan terputus di tengah jalan." },
+          { key: "B", text: "Ketergantungan absolut pada perangkat Switch sentral; jika Switch pusat rusak, maka jaringan di seluruh 40 komputer akan lumpuh seketika." },
+          { key: "C", text: "Sulitnya melacak letak kerusakan apabila ada satu kabel komputer klien yang tergigit tikus atau putus." },
+          { key: "D", text: "Kecepatan lalu lintas data sangat lambat karena data harus terus diputar keliling cincin komputer terlebih dahulu sebelum tiba di tujuan." },
+          { key: "E", text: "Mengharuskan penggunaan Virtual Private Network (VPN) tingkat lanjut karena letak datanya sangat terekspos terbuka." }
+        ],
+        correct: "B",
+        explanation: "Skenario tersebut merupakan gambaran dari topologi Star (Bintang). Semua simpul klien bermuara pada satu buah perangkat pemusat (hub/switch). Titik lemah dan kerentanan tertingginya adalah pada Single Point of Failure: jika perangkat pusatnya rusak/mati, maka seluruh jaringan lokal akan lumpuh total."
+      },
+      {
+        id: 38,
+        category: "Topologi Jaringan",
+        stimulus: "Sebuah bank berskala nasional tidak menginginkan adanya pemutusan layanan konektivitas sedetik pun walau ada jalur antar-gedungnya yang terputus (akibat galian kabel atau bencana). Bank merancang koneksi di mana server A terhubung dengan B, C, dan D, lalu B juga saling terhubung ke C, D, dan A, begitu seterusnya (membentuk jaring-jaring ruwet).",
+        question: "Mengaplikasikan desain tingkat lanjut, topologi jenis apakah yang diterapkan bank tersebut untuk memperoleh redundansi (keandalan pencarian rute) paling maksimal?",
+        options: [
+          { key: "A", text: "Topologi Star Terpusat" },
+          { key: "B", text: "Topologi Ring Tertutup" },
+          { key: "C", text: "Topologi Mesh Penuh" },
+          { key: "D", text: "Topologi Linier Bus" },
+          { key: "E", text: "Topologi Hybrid Standar" }
+        ],
+        correct: "C",
+        explanation: "Rancangan topologi yang menuntut keandalan dan redundansi super tinggi (di mana setiap node saling terhubung langsung ke semua node lain tanpa perantara) adalah ciri khas mutlak dari arsitektur topologi Mesh Penuh (Full Mesh)."
+      },
+      {
+        id: 39,
+        category: "Jaringan Komputer",
+        stimulus: "Dalam sebuah kantor bertopologi Star (Switch sebagai pusat), seorang staf akuntan melapor komputernya tiba-tiba tidak bisa terkoneksi ke jaringan sama sekali, namun rekan-rekan kerjanya di ruangan yang sama mengaku internet mereka aman dan lancar jaya.",
+        question: "Melakukan analisis troubleshooting (pemecahan masalah), mana sumber masalah yang paling logis untuk segera diperiksa teknisi?",
+        options: [
+          { key: "A", text: "Suhu ruangan server mungkin terlalu panas mengakibatkan Switch sentral mematikan dirinya otomatis." },
+          { key: "B", text: "Perusahaan telekomunikasi (ISP) sedang mengalami putus jaringan internet di area kecamatan setempat." },
+          { key: "C", text: "Router gagal menerapkan algoritma enkripsi lalu lintas (WPA3) yang sesuai standar perusahaan." },
+          { key: "D", text: "Kabel LAN dari komputer akuntan menuju Switch mungkin terputus/longgar, atau port khusus akuntan di Switch sedang bermasalah." },
+          { key: "E", text: "Terdapat kerusakan total pada alat Modulator-Demodulator utama (Modem) yang diberikan oleh vendor operator." }
+        ],
+        correct: "D",
+        explanation: "Dalam desain topologi Star, jika hanya ada satu komputer yang bermasalah sementara klien jaringan lainnya bekerja dengan normal, maka hal itu menandakan adanya masalah lokal yang spesifik, seperti terputusnya kabel LAN pada komputer bersangkutan atau kerusakan port spesifik di alat Switch."
+      },
+      {
+        id: 40,
+        category: "Topologi Jaringan",
+        stimulus: "Sebuah perusahaan sedang merenovasi gedung dan harus merancang ulang penataan kabel jaringannya. Mereka ingin jaringan yang paling mudah ditambahkan komputer barunya nanti serta pelacakan kabel putus mudah terlihat di titik mana, walau harus mengorbankan belanja rol kabel Ethernet dalam jumlah berkali lipat lebih banyak.",
+        question: "Membedakan sifat teknis topologinya, alasan mendasar mengapa panitia menolak proposal rancangan Topologi Bus (dan memilih Topologi Star) adalah?",
+        options: [
+          { key: "A", text: "Arsitektur Topologi Bus mengharuskan pemasangan menara pemancar gelombang tinggi di atas atap kantor agar koneksi stabil." },
+          { key: "B", text: "Topologi Bus membutuhkan terlalu banyak sambungan kabel yang dipusatkan di hub, yang bertentangan dengan kebutuhan efisiensi anggaran gedung." },
+          { key: "C", text: "Topologi Bus memaksa penggunaan tipe perangkat keras Router tercanggih yang sangat langka ditemukan di pasaran saat ini." },
+          { key: "D", text: "Topologi Bus beroperasi menggunakan algoritma rantai tertutup (token passing), yang mana memperlambat kinerja jika ada lebih dari 5 komputer." },
+          { key: "E", text: "Topologi Bus menggunakan tulang punggung kabel tunggal yang sulit mendeteksi titik kerusakan, serta gangguan di satu titik kabel sentral akan mematikan koneksi sistem keseluruhan." }
+        ],
+        correct: "E",
+        explanation: "Topologi Bus memiliki tulang punggung kabel yang tunggal, sehingga jika terjadi masalah pada rute kabel tersebut, teknisi akan sangat sulit melacak dan mendeteksi titik pasti kerusakan fisiknya. Selain itu, gangguan sekecil apa pun di titik backbone akan berakibat fatal karena bisa mematikan seluruh koneksi ke sistem jaringan."
+      }
+    ];
+
+    // --- STATE VARIABLES ---
+    let currentQIndex = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let isAnswered = false;
+
+    // --- DOM ELEMENTS ---
+    const screens = {
+      start: document.getElementById('screen-start'),
+      quiz: document.getElementById('screen-quiz'),
+      result: document.getElementById('screen-result')
+    };
+
+    // Quiz Elements
+    const elCategory = document.getElementById('quiz-category');
+    const elProgressText = document.getElementById('quiz-progress-text');
+    const elProgressBar = document.getElementById('quiz-progress-bar');
+    const elStimulusBox = document.getElementById('quiz-stimulus-box');
+    const elStimulus = document.getElementById('quiz-stimulus');
+    const elQuestion = document.getElementById('quiz-question');
+    const elOptions = document.getElementById('quiz-options');
+    const elFeedbackContainer = document.getElementById('quiz-feedback-container');
+    const elFeedbackBox = document.getElementById('quiz-feedback-box');
+    const elFeedbackIcon = document.getElementById('quiz-feedback-icon');
+    const elFeedbackTitle = document.getElementById('quiz-feedback-title');
+    const elFeedbackText = document.getElementById('quiz-feedback-text');
+    const elNextBtn = document.getElementById('quiz-next-btn');
+
+    // Result Elements
+    const elResultScore = document.getElementById('result-score');
+    const elResultCorrect = document.getElementById('result-correct');
+    const elResultTotal = document.getElementById('result-total');
+    const elResultMessage = document.getElementById('result-message');
+    const elResultCircle = document.getElementById('result-circle');
+
+    // --- FUNCTIONS ---
+    function showScreen(screenName) {
+      Object.values(screens).forEach(s => s.classList.add('hidden'));
+      screens[screenName].classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz() {
+      currentQIndex = 0;
+      score = 0;
+      selectedAnswer = null;
+      isAnswered = false;
+      showScreen('quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questionsData[currentQIndex];
+      const progressPercent = ((currentQIndex + 1) / questionsData.length) * 100;
+
+      elCategory.textContent = q.category;
+      elProgressText.textContent = `Soal ${currentQIndex + 1} / ${questionsData.length}`;
+      elProgressBar.style.width = `${progressPercent}%`;
+      
+      if(q.stimulus && q.stimulus.trim() !== '') {
+          elStimulusBox.classList.remove('hidden');
+          elStimulus.textContent = q.stimulus;
+      } else {
+          elStimulusBox.classList.add('hidden');
+      }
+      
+      elQuestion.textContent = q.question;
+      
+      elNextBtn.innerHTML = currentQIndex === questionsData.length - 1  
+        ? `Lihat Hasil Akhir <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+        : `Soal Berikutnya <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>`;
+
+      renderOptions();
+      elFeedbackContainer.classList.add('hidden');
+    }
+
+    function renderOptions() {
+      const q = questionsData[currentQIndex];
+      elOptions.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        
+        let btnClass = "w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-700/40 hover:bg-indigo-600/20 transition duration-200 flex items-start gap-4";
+        let letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-slate-600 text-white flex items-center justify-center font-bold text-sm";
+        
+        if (!isAnswered) {
+          btn.style.cursor = "pointer";
+          btn.onclick = () => selectOption(opt.key);
+        } else {
+          btn.disabled = true;
+          btnClass = "w-full text-left p-4 rounded-xl border flex items-start gap-4 opacity-60";
+          
+          if (opt.key === q.correct) {
+            btnClass = "w-full text-left p-4 rounded-xl border border-emerald-500 bg-emerald-900/40 flex items-start gap-4";
+            letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm";
+          } else if (opt.key === selectedAnswer && selectedAnswer !== q.correct) {
+            btnClass = "w-full text-left p-4 rounded-xl border border-rose-500 bg-rose-900/40 flex items-start gap-4";
+            letterClass = "flex-shrink-0 w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center font-bold text-sm";
+          }
+        }
+
+        btn.className = btnClass;
+        btn.innerHTML = `
+          <span class="${letterClass}">${opt.key}</span>
+          <span class="pt-1 text-slate-200 leading-relaxed">${opt.text}</span>
+        `;
+        elOptions.appendChild(btn);
+      });
+    }
+
+    function selectOption(key) {
+      if (isAnswered) return;
+      isAnswered = true;
+      selectedAnswer = key;
+
+      const q = questionsData[currentQIndex];
+      const isCorrect = (key === q.correct);
+
+      if (isCorrect) score++;
+
+      renderOptions(); // Re-render to show colors
+      showFeedback(isCorrect, q.explanation);
+    }
+
+    function showFeedback(isCorrect, explanation) {
+      elFeedbackContainer.classList.remove('hidden');
+      
+      if (isCorrect) {
+        elFeedbackBox.className = "p-6 rounded-2xl border bg-emerald-900/30 border-emerald-500/50 text-emerald-100 mb-6";
+        elFeedbackIcon.innerHTML = `<svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        elFeedbackTitle.textContent = "Jawaban Kamu Tepat!";
+      } else {
+        elFeedbackBox.className = "p-6 rounded-2xl border bg-rose-900/30 border-rose-500/50 text-rose-100 mb-6";
+        elFeedbackIcon.innerHTML = `<svg class="w-7 h-7 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        elFeedbackTitle.textContent = "Jawaban Kamu Kurang Tepat";
+      }
+
+      elFeedbackText.innerHTML = `<strong class="font-semibold block mb-1">Pembahasan:</strong> <span class="text-slate-200">${explanation}</span>`;
+    }
+
+    function handleNextQuestion() {
+      if (currentQIndex < questionsData.length - 1) {
+        currentQIndex++;
+        selectedAnswer = null;
+        isAnswered = false;
+        renderQuestion();
+      } else {
+        showResultScreen();
+      }
+    }
+
+    function showResultScreen() {
+      const total = questionsData.length;
+      const finalScore = Math.round((score / total) * 100);
+      
+      elResultScore.textContent = finalScore;
+      elResultCorrect.textContent = score;
+      elResultTotal.textContent = total;
+      
+      elResultCircle.setAttribute('stroke-dasharray', `${finalScore}, 100`);
+
+      if (finalScore >= 80) {
+        elResultMessage.textContent = "Luar biasa! Pemahaman Informatikamu sangat mantap.";
+      } else if (finalScore >= 60) {
+        elResultMessage.textContent = "Kerja bagus! Sedikit lagi menguasai materi ini.";
+      } else {
+        elResultMessage.textContent = "Terus semangat belajar! Yuk pelajari lagi pembahasan soal-soalnya.";
+      }
+
+      showScreen('result');
+    }
+
+  </script>
+</body>
+</html>
